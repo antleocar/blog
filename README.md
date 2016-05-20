@@ -15,10 +15,10 @@ its possibilities.
 ## Run the application
 
 - To setup the application:
-* /bin/python setup.py develop
+  /bin/python setup.py develop
 
 - To initialize the db:
-* /bin/initialize_pyramid_blogr_db development.ini
+  /bin/initialize_pyramid_blogr_db development.ini
 
 - To run application:
-* /bin/pserve development.ini
+  /bin/pserve development.ini
