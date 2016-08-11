@@ -1,5 +1,10 @@
 from pyramid.view import view_config
-from ..models.services.blog_record import BlogRecordService
+from pyramid.httpexceptions import HTTPFound
+from pyramid.security import remember, forget
+from blog_app.models.services.user import UserService
+from blog_app.models.services.blog_record import BlogRecordService
+from blog_app.forms import RegistrationForm
+from blog_app.models.user import User
 
 
 @view_config(route_name='home',
@@ -14,4 +19,25 @@ def index_page(request):
              request_method='POST')
 @view_config(route_name='auth', match_param='action=out', renderer='string')
 def sign_in_out(request):
-    return {}
+    username = request.POST.get('username')
+    if username:
+        user = UserService.by_name(username, request=request)
+        if user and user.verify_password(request.POST.get('password')):
+            headers = remember(request, user.name)
+        else:
+            headers = forget(request)
+    else:
+        headers = forget(request)
+    return HTTPFound(location=request.route_url('home'), headers=headers)
+
+
+@view_config(route_name='register',
+             renderer='blog_app:templates/register.jinja2')
+def register(request):
+    form = RegistrationForm(request.POST)
+    if request.method == 'POST' and form.validate():
+        new_user = User(name=form.username.data)
+        new_user.set_password(form.password.data.encode('utf8'))
+        request.dbsession.add(new_user)
+        return HTTPFound(location=request.route_url('home'))
+    return {'form': form}
