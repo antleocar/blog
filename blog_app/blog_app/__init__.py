@@ -28,6 +28,7 @@ def main(global_config, **settings):
                      factory='blog_app.security.BlogRecordFactory')
     config.add_route('auth', '/sign/{action}')
     config.include('.routes')
+    config.include('.models')
 
     config.scan()
     return config.make_wsgi_app()

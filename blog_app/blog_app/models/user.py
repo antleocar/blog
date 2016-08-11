@@ -19,14 +19,12 @@ class User(Base):
     password = Column(Unicode(255), nullable=False)
     last_logged = Column(DateTime, default=datetime.datetime.utcnow)
 
+    def verify_password(self, password):
+        # is it cleartext?
+        if password == self.password:
+            self.set_password(password)
+        return blogger_pwd_context.verify(password, self.password)
 
-def verify_password(self, password):
-    # is it cleartext?
-    if password == self.password:
-        self.set_password(password)
-    return blogger_pwd_context.verify(password, self.password)
-
-
-def set_password(self, password):
-    password_hash = blogger_pwd_context.encrypt(password)
-    self.password = password_hash
+    def set_password(self, password):
+        password_hash = blogger_pwd_context.encrypt(password)
+        self.password = password_hash

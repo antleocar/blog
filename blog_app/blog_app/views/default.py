@@ -41,3 +41,4 @@ def register(request):
         request.dbsession.add(new_user)
         return HTTPFound(location=request.route_url('home'))
     return {'form': form}
+
